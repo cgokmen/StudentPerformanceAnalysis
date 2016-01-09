@@ -48,7 +48,9 @@ public class Student {
         double score = 0;
         
         for (Question q : co.getRelevantQuestions()) {
-            score += (scores.getOrDefault(q, 0.0) / q.getPoints()) * q.getValueInCourseOutcome(co);
+            double s = 0;
+            if (scores.get(q) != null) s = scores.get(q);
+            score += (s / q.getPoints()) * q.getValueInCourseOutcome(co);
         }
         
         return score;
