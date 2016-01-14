@@ -9,6 +9,7 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class Evaluation {
+public class Evaluation implements Comparable<Evaluation> {
     private final String name;
     private final double percentage;
     private final List<Question> questions;
@@ -39,8 +40,8 @@ public class Evaluation {
     }
     
     public Question[] getQuestions() {
-        Question[] questionArray = new Question[questions.size()];
-        questions.toArray(questionArray);
+        Question[] questionArray = questions.toArray(new Question[0]);
+        Arrays.sort(questionArray);
         return questionArray;
     }
 
@@ -105,7 +106,7 @@ public class Evaluation {
                 if (qCount == null) break;
                 
                 String qNameStr = (qName.getCellType() == Cell.CELL_TYPE_STRING) ? qName.getStringCellValue() : ((int) qName.getNumericCellValue()) + "";
-                double qPointsValue = qPoints.getNumericCellValue() / 100;
+                double qPointsValue = qPoints.getNumericCellValue();
                 
                 Question question = new Question(qNameStr, qPointsValue, qCount.getBooleanCellValue(), evaluation, startingCol);
                 
@@ -136,6 +137,12 @@ public class Evaluation {
     }
     
     public static Evaluation[] getAll() {
-        return evaluations.values().toArray(new Evaluation[0]);
+        Evaluation[] evs = evaluations.values().toArray(new Evaluation[0]);
+        Arrays.sort(evs);
+        return evs;
+    }
+
+    public int compareTo(Evaluation o) {
+        return (new AlphanumComparator()).compare(this.getName(), o.getName());
     }
 }

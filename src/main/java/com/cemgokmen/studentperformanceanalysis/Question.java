@@ -9,11 +9,12 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Question {
+public class Question implements Comparable<Question> {
     private final String name;
     private final double points;
     private final boolean countQuestion;
@@ -46,7 +47,9 @@ public class Question {
     }
     
     public Outcome[] getOutcomes() {
-        return outcomes.toArray(new Outcome[0]);
+        Outcome[] outcomeArray = outcomes.toArray(new Outcome[0]);
+        Arrays.sort(outcomeArray);
+        return outcomeArray;
     }
 
     public String getName() {
@@ -64,18 +67,22 @@ public class Question {
     public Evaluation getParent() {
         return parent;
     }
+
+    public boolean doesQuestionCount() {
+        return countQuestion;
+    }
     
     public double getValueInCourse() {
-        return points * getParent().getPercentage();
+        return (points / 100.0) * getParent().getPercentage();
     }
     
     public double getValueInOutcome(Outcome co) {
-        return getValueInCourse() / co.getTotalValueInCourse();
+        return (countQuestion) ? getValueInCourse() / co.getTotalValueInCourse() : 0;
     }
     
     @Override
     public String toString() {
-        String output = "Question " + name + ": " + String.format("%.2f", points * 100) + " points. Outcomes: ";
+        String output = "Question " + name + ": " + String.format("%.2f", points) + " points. Outcomes: ";
         for (Outcome co : outcomes) {
             output += co.getName() + ", ";
         }
@@ -88,6 +95,14 @@ public class Question {
     }
     
     public static Question[] getAll() {
-        return questions.values().toArray(new Question[0]);
+        Question[] questionArray = questions.values().toArray(new Question[0]);
+        Arrays.sort(questionArray);
+        return questionArray;
+    }
+
+    public int compareTo(Question o) {
+        String thisName = this.getParent().getName() + "." + this.getName();
+        String oName = o.getParent().getName() + "." + this.getName();
+        return (new AlphanumComparator()).compare(thisName, oName);
     }
 }

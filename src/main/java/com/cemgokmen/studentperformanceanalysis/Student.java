@@ -8,6 +8,7 @@
  */
 package com.cemgokmen.studentperformanceanalysis;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class Student {
+public class Student implements Comparable<Student> {
     private final int id;
     private final String name;
     private final boolean countStudent;
@@ -39,6 +40,13 @@ public class Student {
 
     public int getId() {
         return id;
+    }
+
+    public boolean doesStudentCount() {
+        if (!countStudent) return false;
+        if (letterGrade.toUpperCase().charAt(0) == 'F') return false;
+        
+        return true;
     }
     
     public double getQuestionScore(Question q) {
@@ -116,6 +124,12 @@ public class Student {
     }
     
     public static Student[] getAll() {
-        return students.values().toArray(new Student[0]);
+        Student[] studentArray = students.values().toArray(new Student[0]);
+        Arrays.sort(studentArray);
+        return studentArray;
+    }
+
+    public int compareTo(Student o) {
+        return ((Integer) this.getId()).compareTo((Integer) o.getId());
     }
 }

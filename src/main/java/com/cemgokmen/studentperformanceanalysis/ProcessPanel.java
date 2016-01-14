@@ -43,13 +43,13 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
             
             double valueOfEachFile = 1.0 / files.length;
 
-            publish("Hello!");
+            publish("Starting StudentPerformanceAnalysis!");
 
             for (int key = 0; key < files.length; key++) {
                 File file = files[key];
                 try {
                     // TODO: Reset all classes!
-                    publish("\nProcessing " + file.getName() + " [" + (key+1) + "/" + files.length + "].");
+                    publish("\nProcessing " + file.getName() + " [" + (key+1) + "/" + files.length + "].\n");
                     Workbook wb = WorkbookFactory.create(file);
                     
                     // Process Program Outcomes
@@ -73,10 +73,11 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
                     setProgress((int) Math.round((key + 1.0) * valueOfEachFile * 100));
                     
                     // Let's output
-                    Outcome[] outcomes = Outcome.getAll();
-                    for (Outcome outcome : outcomes) {            
+                    for (Outcome outcome : Outcome.getAll()) {            
                         publish(outcome.toString());
                     }
+                    
+                    publish("Successfully processed " + file.getName() + " [" + (key+1) + "/" + files.length + "].\n");
                 } catch (Exception ex) {
                     publish("Could not process file " + file.getName() + ".");
                     publish(ex.getMessage());
@@ -102,7 +103,7 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
          */
         @Override
         public void done() {            
-            // Next pane!
+            continueButton.setEnabled(true);
         }
     }
     
@@ -148,44 +149,21 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
         scrollPane = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
         saveButton = new javax.swing.JButton();
+        continueButton = new javax.swing.JButton();
 
         fileChooser.setApproveButtonText("Process");
         fileChooser.setApproveButtonToolTipText("");
         fileChooser.setDialogTitle("Choose files to process");
         fileChooser.setMultiSelectionEnabled(true);
 
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {0};
-        layout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0};
-        setLayout(layout);
-
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Running analysis...");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(jLabel1, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 10;
-        add(progressBar, gridBagConstraints);
 
         textArea.setEditable(false);
         textArea.setColumns(20);
         textArea.setRows(5);
         scrollPane.setViewportView(textArea);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 100;
-        add(scrollPane, gridBagConstraints);
 
         saveButton.setText("Save Log");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -193,11 +171,53 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
                 saveButtonActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(saveButton, gridBagConstraints);
+
+        continueButton.setText("Continue ->");
+        continueButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                continueButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(139, 139, 139)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(continueButton, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE))
+                .addGap(139, 139, 139))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollPane)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addGap(5, 5, 5)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(saveButton)
+                .addGap(5, 5, 5)
+                .addComponent(continueButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -219,8 +239,13 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_continueButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton continueButton;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JProgressBar progressBar;

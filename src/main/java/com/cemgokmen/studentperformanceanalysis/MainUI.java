@@ -96,7 +96,9 @@ public class MainUI extends javax.swing.JFrame {
     public void setPanel(JPanel p) {
         panel.removeAll();
         panel.add(p);
+        
         validate();
+        pack();
         repaint();
     }
 }

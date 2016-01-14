@@ -45,15 +45,15 @@ public class ProgramOutcome extends Outcome {
         return courseOutcomes.contains(co);
     }
     
-    public CourseOutcome[] getCourseOutcomes() {
-        CourseOutcome[] outcomes = new CourseOutcome[0];
-        courseOutcomes.toArray(outcomes);
+    public Outcome[] getRelatedOutcomes() {
+        Outcome[] outcomes = courseOutcomes.toArray(new Outcome[0]);
+        Arrays.sort(outcomes);
         return outcomes;
     }
     
     public void addRelevantQuestion(Question q) {
         directlyRelevantQuestions.add(q);
-        recalculateTotalValueInCourse(); // TODO: Move this elsewhere
+        recalculateTotalValueInCourse();
     }
     
     public boolean hasRelevantQuestion(Question q) {
@@ -79,18 +79,22 @@ public class ProgramOutcome extends Outcome {
             qs.addAll(Arrays.asList(co.getRelevantQuestions()));
         }
 
-        return qs.toArray(new Question[0]);
+        Question[] questions = qs.toArray(new Question[0]);
+        Arrays.sort(questions);
+        return questions;
     }
     
     public Question[] getDirectlyRelevantQuestions() {
         Question[] questions = directlyRelevantQuestions.toArray(new Question[0]);
+        Arrays.sort(questions);
         return questions;
     }
     
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
         for (Question q : getRelevantQuestions()) {
-            totalValueInCourse += q.getValueInCourse();
+            if (q.doesQuestionCount())
+                totalValueInCourse += q.getValueInCourse();
         }
     }
 
@@ -104,30 +108,6 @@ public class ProgramOutcome extends Outcome {
 
     public double getTotalValueInCourse() {
         return totalValueInCourse;
-    }
-    
-    @Override
-    public String toString() {
-        String output = name + ": " + explanation + "\nCourse Outcomes: ";
-        for (CourseOutcome outcome : courseOutcomes) {
-            output += outcome.getName() + ", ";
-        }
-        output = output.substring(0, output.length() - 2);
-        
-        output += "\nRelevant Questions:\n";
-
-        for (Question question : getRelevantQuestions()) {
-            output += String.format("    Evaluation %s(%.2f), Question %s(%.2f), Total value in course:(%.2f), Total value in outcome(%.2f)%n",
-                    question.getParent().getName(),
-                    question.getParent().getPercentage() * 100,
-                    question.getName(),
-                    question.getPoints() * 100,
-                    question.getValueInCourse() * 100,
-                    question.getValueInOutcome(this) * 100
-            );
-        }
-        
-        return output;
     }
     
     public static void processExcelSheet(Sheet sheet) {
@@ -159,6 +139,8 @@ public class ProgramOutcome extends Outcome {
     }
     
     public static ProgramOutcome[] getAll() {
-        return programOutcomes.values().toArray(new ProgramOutcome[0]);
+        ProgramOutcome[] outcomes = programOutcomes.values().toArray(new ProgramOutcome[0]);
+        Arrays.sort(outcomes);
+        return outcomes;
     }
 }

@@ -9,6 +9,7 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -46,8 +47,10 @@ public class CourseOutcome extends Outcome {
         return programOutcomes.contains(po);
     }
     
-    public ProgramOutcome[] getProgramOutcomes() {
-        return programOutcomes.toArray(new ProgramOutcome[0]);
+    public Outcome[] getRelatedOutcomes() {
+        Outcome[] outcomes = programOutcomes.toArray(new Outcome[0]);
+        Arrays.sort(outcomes);
+        return outcomes;
     }
     
     public void addRelevantQuestion(Question q) {
@@ -65,15 +68,16 @@ public class CourseOutcome extends Outcome {
     }
     
     public Question[] getRelevantQuestions() {
-        Question[] questions = new Question[relevantQuestions.size()];
-        relevantQuestions.toArray(questions);
+        Question[] questions = relevantQuestions.toArray(new Question[0]);
+        Arrays.sort(questions);
         return questions;
     }
     
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
         for (Question q : relevantQuestions) {
-            totalValueInCourse += q.getValueInCourse();
+            if (q.doesQuestionCount())
+                totalValueInCourse += q.getValueInCourse();
         }
     }
 
@@ -87,32 +91,6 @@ public class CourseOutcome extends Outcome {
 
     public double getTotalValueInCourse() {
         return totalValueInCourse;
-    }
-    
-    @Override
-    public String toString() {
-        String output = name + ": " + explanation + "\nProgram Outcomes: ";
-        for (ProgramOutcome outcome : programOutcomes) {
-            output += outcome.getName() + ", ";
-        }
-        output = output.substring(0, output.length() - 2);
-        
-        output += "\nRelevant Questions:\n";
-
-        for (Question question : relevantQuestions) {
-            output += String.format("    Evaluation %s(%.2f), Question %s(%.2f), Total value in course:(%.2f), Total value in outcome(%.2f)%n",
-                    question.getParent().getName(),
-                    question.getParent().getPercentage() * 100,
-                    question.getName(),
-                    question.getPoints() * 100,
-                    question.getValueInCourse() * 100,
-                    question.getValueInOutcome(this) * 100
-            );
-        }
-        
-        output += String.format("The average for this outcome is: %.2f%%.%n", calculateAverageForOutcome(this) * 100);
-        
-        return output;
     }
     
     public static void processExcelSheet(Sheet sheet) {
@@ -154,6 +132,8 @@ public class CourseOutcome extends Outcome {
     }
     
     public static CourseOutcome[] getAll() {
-        return courseOutcomes.values().toArray(new CourseOutcome[0]);
+        CourseOutcome[] outcomes = courseOutcomes.values().toArray(new CourseOutcome[0]);
+        Arrays.sort(outcomes);
+        return outcomes;
     }
 }
