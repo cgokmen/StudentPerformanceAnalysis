@@ -54,6 +54,21 @@ public abstract class Outcome implements Comparable<Outcome> {
         return outcomes.toArray(new Outcome[0]);
     }
     
+    public static Outcome[] getAllWithQuestions() {
+        ArrayList<Outcome> outcomes = new ArrayList<>();
+        
+        outcomes.addAll(Arrays.asList(ProgramOutcome.getAll()));
+        outcomes.addAll(Arrays.asList(CourseOutcome.getAll()));
+        
+        ArrayList<Outcome> results = new ArrayList<>();
+        for (Outcome o : outcomes) {
+            if (o.getRelevantQuestions().length > 0)
+                results.add(o);
+        }
+        
+        return results.toArray(new Outcome[0]);
+    }
+    
     @Override
     public String toString() {
         String output = this.getName() + ": " + this.getExplanation() + "\nRelated Outcomes: ";

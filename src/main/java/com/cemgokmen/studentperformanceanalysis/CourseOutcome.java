@@ -26,13 +26,13 @@ public class CourseOutcome extends Outcome {
     private final Set<Question> relevantQuestions;
     private double totalValueInCourse;
     
-    private static final Map<String, CourseOutcome> courseOutcomes = new LinkedHashMap<String, CourseOutcome>();
+    private static final Map<String, CourseOutcome> courseOutcomes = new LinkedHashMap<>();
 
     public CourseOutcome(String name, String explanation) {
         this.name = name;
         this.explanation = explanation;
-        this.programOutcomes = new ArrayList<ProgramOutcome>();
-        this.relevantQuestions = new LinkedHashSet<Question>();
+        this.programOutcomes = new ArrayList<>();
+        this.relevantQuestions = new LinkedHashSet<>();
         this.totalValueInCourse = 0;
     }
     
@@ -47,12 +47,14 @@ public class CourseOutcome extends Outcome {
         return programOutcomes.contains(po);
     }
     
+    @Override
     public Outcome[] getRelatedOutcomes() {
         Outcome[] outcomes = programOutcomes.toArray(new Outcome[0]);
         Arrays.sort(outcomes);
         return outcomes;
     }
     
+    @Override
     public void addRelevantQuestion(Question q) {
         if (!hasRelevantQuestion(q)) {
             relevantQuestions.add(q);
@@ -63,10 +65,12 @@ public class CourseOutcome extends Outcome {
         }
     }
     
+    @Override
     public boolean hasRelevantQuestion(Question q) {
         return relevantQuestions.contains(q);
     }
     
+    @Override
     public Question[] getRelevantQuestions() {
         Question[] questions = relevantQuestions.toArray(new Question[0]);
         Arrays.sort(questions);
@@ -81,20 +85,23 @@ public class CourseOutcome extends Outcome {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getExplanation() {
         return explanation;
     }
 
+    @Override
     public double getTotalValueInCourse() {
         return totalValueInCourse;
     }
     
     public static void processExcelSheet(Sheet sheet) {
-        int startingRow = 2;
+        int startingRow = 6;
         while (true) {
             Row row = sheet.getRow(startingRow);
             if (row == null) break;

@@ -42,6 +42,10 @@ public class Student implements Comparable<Student> {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public boolean doesStudentCount() {
         if (!countStudent) return false;
         if (letterGrade.toUpperCase().charAt(0) == 'F') return false;
@@ -81,7 +85,7 @@ public class Student implements Comparable<Student> {
     }
     
     public static void processExcelSheet(Sheet sheet) {
-        int startingRow = 11;
+        int startingRow = 9;
         while (true) {
             Row row = sheet.getRow(startingRow);
             if (row == null) break;

@@ -26,13 +26,13 @@ public class ProgramOutcome extends Outcome {
     private final Set<Question> directlyRelevantQuestions;
     private double totalValueInCourse;
     
-    private static final Map<String, ProgramOutcome> programOutcomes = new LinkedHashMap<String, ProgramOutcome>();
+    private static final Map<String, ProgramOutcome> programOutcomes = new LinkedHashMap<>();
 
     public ProgramOutcome(String name, String explanation) {
         this.name = name;
         this.explanation = explanation;
-        this.courseOutcomes = new ArrayList<CourseOutcome>();
-        this.directlyRelevantQuestions = new LinkedHashSet<Question>();
+        this.courseOutcomes = new ArrayList<>();
+        this.directlyRelevantQuestions = new LinkedHashSet<>();
         this.totalValueInCourse = 0;
     }
     
@@ -45,17 +45,20 @@ public class ProgramOutcome extends Outcome {
         return courseOutcomes.contains(co);
     }
     
+    @Override
     public Outcome[] getRelatedOutcomes() {
         Outcome[] outcomes = courseOutcomes.toArray(new Outcome[0]);
         Arrays.sort(outcomes);
         return outcomes;
     }
     
+    @Override
     public void addRelevantQuestion(Question q) {
         directlyRelevantQuestions.add(q);
         recalculateTotalValueInCourse();
     }
     
+    @Override
     public boolean hasRelevantQuestion(Question q) {
         if (directlyRelevantQuestions.contains(q))
             return true;
@@ -72,8 +75,9 @@ public class ProgramOutcome extends Outcome {
         return directlyRelevantQuestions.contains(q);
     }
     
+    @Override
     public Question[] getRelevantQuestions() {
-        Set<Question> qs = new LinkedHashSet<Question>();
+        Set<Question> qs = new LinkedHashSet<>();
         qs.addAll(directlyRelevantQuestions);
         for (CourseOutcome co : courseOutcomes) {
             qs.addAll(Arrays.asList(co.getRelevantQuestions()));
@@ -98,14 +102,17 @@ public class ProgramOutcome extends Outcome {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getExplanation() {
         return explanation;
     }
 
+    @Override
     public double getTotalValueInCourse() {
         return totalValueInCourse;
     }

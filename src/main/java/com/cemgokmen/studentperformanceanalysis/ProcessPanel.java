@@ -11,15 +11,26 @@ package com.cemgokmen.studentperformanceanalysis;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -221,7 +232,7 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        FileWriter fw = null;
+        /*FileWriter fw = null;
         try {
             File newTextFile = new File("log.txt");
             newTextFile.createNewFile();
@@ -236,6 +247,99 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
             } catch (IOException ex) {
                 Logger.getLogger(ProcessPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }*/
+        
+        XSSFWorkbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("Results");
+        Outcome[] allOutcomes = Outcome.getAllWithQuestions();
+        Row headers = sheet.createRow(0);
+        headers.createCell(0).setCellValue("ID");
+        headers.createCell(1).setCellValue("Name");
+        headers.createCell(2).setCellValue("Average");
+        for (int i = 0; i < allOutcomes.length; i++) {
+            Outcome o = allOutcomes[i];
+            Cell cell = headers.createCell(i + 3);
+            cell.setCellType(Cell.CELL_TYPE_STRING);
+            cell.setCellValue(o.getName());
+        }
+        
+        DataFormat format = wb.createDataFormat();
+        CellStyle style = wb.createCellStyle();
+        style.setDataFormat(format.getFormat("0.00"));
+        
+        XSSFCellStyle cancelledStyle = wb.createCellStyle();
+        cancelledStyle.cloneStyleFrom(style);
+        cancelledStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cancelledStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
+        
+        Student[] students = Student.getAll();
+        System.out.println(students.length);
+        int j;
+        double sumAllScores = 0;
+        int studentCount = 0;
+        for (j = 0; j < students.length; j++) {
+            Student student = students[j];
+            Row row = sheet.createRow(j+1);
+            row.createCell(0).setCellValue(student.getId());
+            
+            Cell nameCell = row.createCell(1);
+            nameCell.setCellType(Cell.CELL_TYPE_STRING);
+            nameCell.setCellValue(student.getName());
+            if (!student.doesStudentCount())
+                nameCell.setCellStyle(cancelledStyle);
+            
+            Cell averageCell = row.createCell(2);
+            
+            double sumScore = 0;
+            int scoreCount = 0;
+            for (int k = 0; k < allOutcomes.length; k++) {
+                Outcome o = allOutcomes[k];
+                double score = student.calculateOutcomeScore(o) * 100;
+                Cell c = row.createCell(k+3);
+                c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                c.setCellValue(score);
+                c.setCellStyle(style);
+                
+                if (o.getRelevantQuestions().length > 0) {
+                    sumScore += score;
+                    scoreCount++;
+                }
+            }
+            
+            double average = sumScore / scoreCount;
+            averageCell.setCellValue(average);
+            averageCell.setCellStyle(style);
+            if (!student.doesStudentCount()) 
+                averageCell.setCellStyle(cancelledStyle);
+            
+            if (student.doesStudentCount()) {
+                sumAllScores += average;
+                studentCount++;
+            }
+        }
+        j++;
+        Row averageRow = sheet.createRow(j);
+        averageRow.createCell(1).setCellValue("Course averages:");
+        Cell averageCell = averageRow.createCell(2);
+        
+        for (int i = 0; i < allOutcomes.length; i++) {
+            Cell cell = averageRow.createCell(i + 3);
+            double score = allOutcomes[i].calculateAverage() * 100;
+            cell.setCellValue(score);
+            cell.setCellStyle(style);
+        }
+        averageCell.setCellValue(sumAllScores / studentCount);
+        averageCell.setCellStyle(style);
+            
+        try {
+            File file = new File("workbook.xlsx");
+            file.createNewFile();
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                wb.write(fileOut);
+                fileOut.close();
+            }
+        } catch (Exception ex) {
+            
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
