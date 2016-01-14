@@ -42,22 +42,34 @@
             <version>2.6.0</version>
         </dependency>
     </dependencies>
-  
+    
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <finalName>SPA</finalName>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.cemgokmen.studentperformanceanalysis.StudentPerformanceAnalysis</mainClass>
-                        </manifest>
-                    </archive>
+                    <transformers>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>com.cemgokmen.studentperformanceanalysis.StudentPerformanceAnalysis</mainClass>
+                      </transformer>
+                    </transformers>
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java/</directory>
+            </resource>
+        </resources>
     </build>
 </project>

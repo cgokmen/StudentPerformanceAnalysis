@@ -9,6 +9,7 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,61 +19,77 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class CourseOutcome extends Outcome {
+public class ProgramOutcome extends Outcome {
     private final String name;
     private final String explanation;
-    private final List<ProgramOutcome> programOutcomes;
-    private final Set<Question> relevantQuestions;
+    private final List<CourseOutcome> courseOutcomes;
+    private final Set<Question> directlyRelevantQuestions;
     private double totalValueInCourse;
     
-    private static final Map<String, CourseOutcome> courseOutcomes = new LinkedHashMap<String, CourseOutcome>();
+    private static final Map<String, ProgramOutcome> programOutcomes = new LinkedHashMap<String, ProgramOutcome>();
 
-    public CourseOutcome(String name, String explanation) {
+    public ProgramOutcome(String name, String explanation) {
         this.name = name;
         this.explanation = explanation;
-        this.programOutcomes = new ArrayList<ProgramOutcome>();
-        this.relevantQuestions = new LinkedHashSet<Question>();
+        this.courseOutcomes = new ArrayList<CourseOutcome>();
+        this.directlyRelevantQuestions = new LinkedHashSet<Question>();
         this.totalValueInCourse = 0;
     }
     
-    public void addProgramOutcome(ProgramOutcome po) {
-        if (!hasProgramOutcome(po)) {
-            programOutcomes.add(po);
-            po.addCourseOutcome(this);
-        }
+    public void addCourseOutcome(CourseOutcome co) {
+        if (!hasCourseOutcome(co))
+            courseOutcomes.add(co);
     }
     
-    public boolean hasProgramOutcome(ProgramOutcome po) {
-        return programOutcomes.contains(po);
+    public boolean hasCourseOutcome(CourseOutcome co) {
+        return courseOutcomes.contains(co);
     }
     
-    public ProgramOutcome[] getProgramOutcomes() {
-        return programOutcomes.toArray(new ProgramOutcome[0]);
+    public CourseOutcome[] getCourseOutcomes() {
+        CourseOutcome[] outcomes = new CourseOutcome[0];
+        courseOutcomes.toArray(outcomes);
+        return outcomes;
     }
     
     public void addRelevantQuestion(Question q) {
-        if (!hasRelevantQuestion(q)) {
-            relevantQuestions.add(q);
-            recalculateTotalValueInCourse();
-            for (ProgramOutcome po : programOutcomes) {
-                po.recalculateTotalValueInCourse();
-            }
-        }
+        directlyRelevantQuestions.add(q);
+        recalculateTotalValueInCourse(); // TODO: Move this elsewhere
     }
     
     public boolean hasRelevantQuestion(Question q) {
-        return relevantQuestions.contains(q);
+        if (directlyRelevantQuestions.contains(q))
+            return true;
+        
+        for (CourseOutcome co : courseOutcomes) {
+            if (co.hasRelevantQuestion(q))
+                return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean hasDirectlyRelevantQuestion(Question q) {
+        return directlyRelevantQuestions.contains(q);
     }
     
     public Question[] getRelevantQuestions() {
-        Question[] questions = new Question[relevantQuestions.size()];
-        relevantQuestions.toArray(questions);
+        Set<Question> qs = new LinkedHashSet<Question>();
+        qs.addAll(directlyRelevantQuestions);
+        for (CourseOutcome co : courseOutcomes) {
+            qs.addAll(Arrays.asList(co.getRelevantQuestions()));
+        }
+
+        return qs.toArray(new Question[0]);
+    }
+    
+    public Question[] getDirectlyRelevantQuestions() {
+        Question[] questions = directlyRelevantQuestions.toArray(new Question[0]);
         return questions;
     }
     
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
-        for (Question q : relevantQuestions) {
+        for (Question q : getRelevantQuestions()) {
             totalValueInCourse += q.getValueInCourse();
         }
     }
@@ -91,15 +108,15 @@ public class CourseOutcome extends Outcome {
     
     @Override
     public String toString() {
-        String output = name + ": " + explanation + "\nProgram Outcomes: ";
-        for (ProgramOutcome outcome : programOutcomes) {
+        String output = name + ": " + explanation + "\nCourse Outcomes: ";
+        for (CourseOutcome outcome : courseOutcomes) {
             output += outcome.getName() + ", ";
         }
         output = output.substring(0, output.length() - 2);
         
         output += "\nRelevant Questions:\n";
 
-        for (Question question : relevantQuestions) {
+        for (Question question : getRelevantQuestions()) {
             output += String.format("    Evaluation %s(%.2f), Question %s(%.2f), Total value in course:(%.2f), Total value in outcome(%.2f)%n",
                     question.getParent().getName(),
                     question.getParent().getPercentage() * 100,
@@ -109,8 +126,6 @@ public class CourseOutcome extends Outcome {
                     question.getValueInOutcome(this) * 100
             );
         }
-        
-        output += String.format("The average for this outcome is: %.2f%%.%n", calculateAverageForOutcome(this) * 100);
         
         return output;
     }
@@ -130,30 +145,20 @@ public class CourseOutcome extends Outcome {
             String nameStr = name.getStringCellValue();
             String explanationStr = explanation.getStringCellValue();
             
-            CourseOutcome outcome = new CourseOutcome(nameStr, explanationStr);
-            
-            Cell po = row.getCell(2);
-            if (po == null) break;
-            
-            String[] programOutcomes = po.getStringCellValue().split(",");
-            for (String out : programOutcomes) {
-                ProgramOutcome pOutcome = ProgramOutcome.get(out.trim());
-                if (pOutcome != null)
-                    outcome.addProgramOutcome(pOutcome);
-            }
+            ProgramOutcome outcome = new ProgramOutcome(nameStr, explanationStr);
             
             //System.out.println(outcome + "\n");
             startingRow++;
             
-            courseOutcomes.put(nameStr, outcome);
+            programOutcomes.put(nameStr, outcome);
         }
     }
     
-    public static CourseOutcome get(String str) {
-        return courseOutcomes.get(str);
+    public static ProgramOutcome get(String str) {
+        return programOutcomes.get(str);
     }
     
-    public static CourseOutcome[] getAll() {
-        return courseOutcomes.values().toArray(new CourseOutcome[0]);
+    public static ProgramOutcome[] getAll() {
+        return programOutcomes.values().toArray(new ProgramOutcome[0]);
     }
 }

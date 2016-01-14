@@ -9,7 +9,7 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,7 +21,7 @@ public class Evaluation {
     private final double percentage;
     private final List<Question> questions;
     
-    private static final Map<String, Evaluation> evaluations = new HashMap<String, Evaluation>();
+    private static final Map<String, Evaluation> evaluations = new LinkedHashMap<String, Evaluation>();
 
     public Evaluation(String name, double percentage) {
         this.name = name;
@@ -62,16 +62,31 @@ public class Evaluation {
         return output;
     }
     
-    public static void processExcelSheet(Sheet sheet) {
-        int startingRow = 2;
-        evaluations: while (true) {
-            Row row = sheet.getRow(startingRow);
-            if (row == null) break;
-            
-            Cell name = row.getCell(0);
+    public static void processExcelSheet(Sheet sheet) {        
+        Row exams = sheet.getRow(1);
+        if (exams == null) return;
+        
+        Row examValues = sheet.getRow(2);
+        if (examValues == null) return;
+        
+        Row questions = sheet.getRow(3);
+        if (questions == null) return;
+        
+        Row questionValues = sheet.getRow(4);
+        if (questionValues == null) return;
+        
+        Row questionOutcomes = sheet.getRow(5);
+        if (questionOutcomes == null) return;
+        
+        Row countQuestions = sheet.getRow(6);
+        if (countQuestions == null) return;
+        
+        int startingCol = 5;
+        evaluations: while (true) {            
+            Cell name = exams.getCell(startingCol);
             if (name == null) break;
             
-            Cell percentage = row.getCell(1);
+            Cell percentage = examValues.getCell(startingCol);
             if (percentage == null) break;
             
             String nameStr = name.getStringCellValue();
@@ -80,38 +95,33 @@ public class Evaluation {
             Evaluation evaluation = new Evaluation(nameStr, percentageValue);
             
             questions: while (true) {
-                Row qRow = sheet.getRow(startingRow);
-                if (qRow == null) break;
-
-                Cell qName = qRow.getCell(2);
+                Cell qName = questions.getCell(startingCol);
                 if (qName == null) break;
                 
-                Cell qPoints = qRow.getCell(3);
+                Cell qPoints = questionValues.getCell(startingCol);
                 if (qPoints == null) break;
                 
-                String qNameStr = qName.getStringCellValue();
+                Cell qCount = countQuestions.getCell(startingCol);
+                if (qCount == null) break;
+                
+                String qNameStr = (qName.getCellType() == Cell.CELL_TYPE_STRING) ? qName.getStringCellValue() : ((int) qName.getNumericCellValue()) + "";
                 double qPointsValue = qPoints.getNumericCellValue() / 100;
                 
-                Question question = new Question(qNameStr, qPointsValue, evaluation);
-                int startingCol = 4;
-                outcomes: while (true) {
-                    Cell co = qRow.getCell(startingCol);
-                    if (co == null) break;
-
-                    CourseOutcome outcome = CourseOutcome.get(co.getStringCellValue());
+                Question question = new Question(qNameStr, qPointsValue, qCount.getBooleanCellValue(), evaluation, startingCol);
+                
+                Cell qOutcomes = questionOutcomes.getCell(startingCol);
+                String[] outcomes = qOutcomes.getStringCellValue().split(",");
+                for (String out : outcomes) {
+                    Outcome outcome = Outcome.get(out.trim());
                     if (outcome != null)
-                        question.addCourseOutcome(outcome);
-                    
-                    startingCol++;
+                        question.addOutcome(outcome);
                 }
                 
                 evaluation.addQuestion(question);
-                startingRow++;
+                startingCol++;
                 
                 // Check if new row has new quiz
-                Row testRow = sheet.getRow(startingRow);
-                if (testRow == null) break evaluations;
-                Cell testName = testRow.getCell(0);
+                Cell testName = exams.getCell(startingCol);
                 if (testName != null && testName.getStringCellValue().trim().length() > 0) {
                     break;
                 }

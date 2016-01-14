@@ -9,6 +9,7 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,13 +18,23 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 public class Student {
     private final int id;
+    private final String name;
+    private final boolean countStudent;
+    private final String letterGrade;
     private final Map<Question, Double> scores;
     
-    private static final Map<Integer, Student> students = new HashMap<Integer, Student>();
+    private static final Map<Integer, Student> students = new LinkedHashMap<Integer, Student>();
 
-    public Student(int id) {
+    public Student(int id, String name, boolean countStudent, String letterGrade) {
         this.id = id;
-        this.scores = new HashMap<Question, Double>();
+        this.name = name;
+        this.countStudent = countStudent;
+        this.letterGrade = letterGrade;
+        this.scores = new LinkedHashMap<Question, Double>();
+    }
+    
+    public void addScore(Question q, double score) {
+        scores.put(q, score);
     }
 
     public int getId() {
@@ -44,13 +55,13 @@ public class Student {
         return score;
     }
     
-    public double calculateCourseOutcomeScore(CourseOutcome co) {
+    public double calculateOutcomeScore(Outcome co) {
         double score = 0;
         
         for (Question q : co.getRelevantQuestions()) {
             double s = 0;
             if (scores.get(q) != null) s = scores.get(q);
-            score += (s / q.getPoints()) * q.getValueInCourseOutcome(co);
+            score += (s / q.getPoints()) * q.getValueInOutcome(co);
         }
         
         return score;
@@ -62,7 +73,42 @@ public class Student {
     }
     
     public static void processExcelSheet(Sheet sheet) {
-
+        int startingRow = 11;
+        while (true) {
+            Row row = sheet.getRow(startingRow);
+            if (row == null) break;
+            
+            Cell idCell = row.getCell(0);
+            if (idCell == null) break;
+            
+            Cell nameCell = row.getCell(1);
+            if (nameCell == null) break;
+            
+            Cell countCell = row.getCell(3);
+            if (countCell == null) break;
+            
+            Cell letterGradeCell = row.getCell(4);
+            if (letterGradeCell == null) break;
+            
+            int id = (int) idCell.getNumericCellValue();
+            String name = nameCell.getStringCellValue();
+            boolean count = countCell.getBooleanCellValue();
+            String letterGrade = letterGradeCell.getStringCellValue();
+            
+            Student student = new Student(id, name, count, letterGrade);
+            
+            // Get all the questions and map them to their results
+            for (Question q : Question.getAll()) {
+                Cell scoreCell = row.getCell(q.getColumn());
+                double score = scoreCell.getNumericCellValue();
+                student.addScore(q, score);
+            }
+            
+            //System.out.println(outcome + "\n");
+            startingRow++;
+            
+            students.put(id, student);
+        }
     }
     
     public static Student get(int id) {

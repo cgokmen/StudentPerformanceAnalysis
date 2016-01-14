@@ -9,36 +9,44 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Question {
     private final String name;
     private final double points;
-    private final List<CourseOutcome> courseOutcomes;
+    private final boolean countQuestion;
+    private final List<Outcome> outcomes;
     private final Evaluation parent;
+    private final int column;
+    
+    private static final Map<Integer, Question> questions = new LinkedHashMap<Integer, Question>();
 
-    public Question(String name, double points, Evaluation parent) {
+    public Question(String name, double points, boolean countQuestion, Evaluation parent, int column) {
         this.name = name;
         this.points = points;
-        this.courseOutcomes = new ArrayList<CourseOutcome>();
+        this.countQuestion = countQuestion;
+        this.outcomes = new ArrayList<Outcome>();
         this.parent = parent;
+        this.column = column;
+        
+        questions.put(column, this);
     }
     
-    public void addCourseOutcome(CourseOutcome co) {
-        if (!hasCourseOutcome(co)) {
-            courseOutcomes.add(co);
+    public void addOutcome(Outcome co) {
+        if (!hasOutcome(co)) {
+            outcomes.add(co);
             co.addRelevantQuestion(this);
         }
     }
     
-    public boolean hasCourseOutcome(CourseOutcome co) {
-        return courseOutcomes.contains(co);
+    public boolean hasOutcome(Outcome co) {
+        return outcomes.contains(co);
     }
     
-    public CourseOutcome[] getCourseOutcomes() {
-        CourseOutcome[] outcomes = new CourseOutcome[courseOutcomes.size()];
-        courseOutcomes.toArray(outcomes);
-        return outcomes;
+    public Outcome[] getOutcomes() {
+        return outcomes.toArray(new Outcome[0]);
     }
 
     public String getName() {
@@ -49,6 +57,10 @@ public class Question {
         return points;
     }
 
+    public int getColumn() {
+        return column;
+    }
+
     public Evaluation getParent() {
         return parent;
     }
@@ -57,16 +69,25 @@ public class Question {
         return points * getParent().getPercentage();
     }
     
-    public double getValueInCourseOutcome(CourseOutcome co) {
+    public double getValueInOutcome(Outcome co) {
         return getValueInCourse() / co.getTotalValueInCourse();
     }
     
     @Override
     public String toString() {
-        String output = "Question " + name + ": " + String.format("%.2f", points * 100) + " points. Course Outcomes: ";
-        for (CourseOutcome co : courseOutcomes) {
+        String output = "Question " + name + ": " + String.format("%.2f", points * 100) + " points. Outcomes: ";
+        for (Outcome co : outcomes) {
             output += co.getName() + ", ";
         }
+        output = output.substring(0, output.length() - 2);
         return output;
+    }
+    
+    public static Question get(String str) {
+        return Question.get(str);
+    }
+    
+    public static Question[] getAll() {
+        return questions.values().toArray(new Question[0]);
     }
 }
