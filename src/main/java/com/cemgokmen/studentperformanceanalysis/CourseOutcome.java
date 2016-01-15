@@ -71,7 +71,7 @@ public class CourseOutcome extends Outcome {
     }
     
     @Override
-    public Question[] getRelevantQuestions() {
+    public Question[] getRelevantQuestions(boolean _) {
         Question[] questions = relevantQuestions.toArray(new Question[0]);
         Arrays.sort(questions);
         return questions;

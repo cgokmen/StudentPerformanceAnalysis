@@ -112,7 +112,7 @@ public class InitialPanel extends javax.swing.JPanel {
             mainUI.setPanel(panel);
             panel.processFiles(files);
         } else {
-            System.out.println("File access cancelled by user.");
+            //System.out.println("File access cancelled by user.");
         }
     }//GEN-LAST:event_buttonActionPerformed
 

@@ -67,10 +67,10 @@ public class Student implements Comparable<Student> {
         return score;
     }
     
-    public double calculateOutcomeScore(Outcome co) {
+    public double calculateOutcomeScore(Outcome co, boolean onlyDirect) {
         double score = 0;
         
-        for (Question q : co.getRelevantQuestions()) {
+        for (Question q : co.getRelevantQuestions(onlyDirect)) {
             double s = 0;
             if (scores.get(q) != null) s = scores.get(q);
             score += (s / q.getPoints()) * q.getValueInOutcome(co);

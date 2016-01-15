@@ -16,7 +16,7 @@ public abstract class Outcome implements Comparable<Outcome> {
     
     public abstract boolean hasRelevantQuestion(Question q);
     
-    public abstract Question[] getRelevantQuestions();
+    public abstract Question[] getRelevantQuestions(boolean onlyDirect);
     
     public abstract Outcome[] getRelatedOutcomes();
         
@@ -26,12 +26,12 @@ public abstract class Outcome implements Comparable<Outcome> {
 
     public abstract double getTotalValueInCourse();
     
-    public double calculateAverage() {
+    public double calculateAverage(boolean onlyDirect) {
         double sum = 0;
         int eligibleStudents = 0;
         for (Student s : Student.getAll()) {
             if (s.doesStudentCount()) {
-                sum += s.calculateOutcomeScore(this);
+                sum += s.calculateOutcomeScore(this, onlyDirect);
                 eligibleStudents++;
             }
         }
@@ -62,7 +62,7 @@ public abstract class Outcome implements Comparable<Outcome> {
         
         ArrayList<Outcome> results = new ArrayList<>();
         for (Outcome o : outcomes) {
-            if (o.getRelevantQuestions().length > 0)
+            if (o.getRelevantQuestions(false).length > 0)
                 results.add(o);
         }
         
@@ -84,7 +84,7 @@ public abstract class Outcome implements Comparable<Outcome> {
         
         output += "\nRelevant Questions: ";
 
-        Question[] relevantQuestions = this.getRelevantQuestions();
+        Question[] relevantQuestions = this.getRelevantQuestions(false);
         if (relevantQuestions.length > 0) {
             output += "\n";
             for (Question question : relevantQuestions) {
@@ -98,7 +98,7 @@ public abstract class Outcome implements Comparable<Outcome> {
                 );
             }
 
-            output += String.format("The average for this outcome is: %.2f%%.%n", this.calculateAverage() * 100);
+            output += String.format("The average for this outcome is: %.2f%%.%n", this.calculateAverage(false) * 100);
         } else {
             output += "N/A\n";
             output += "The average for this outcome cannot be calculated due to the lack of data.\n";

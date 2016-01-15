@@ -76,11 +76,14 @@ public class ProgramOutcome extends Outcome {
     }
     
     @Override
-    public Question[] getRelevantQuestions() {
+    public Question[] getRelevantQuestions(boolean onlyDirect) {
+        if (onlyDirect)
+            return getDirectlyRelevantQuestions();
+        
         Set<Question> qs = new LinkedHashSet<>();
         qs.addAll(directlyRelevantQuestions);
         for (CourseOutcome co : courseOutcomes) {
-            qs.addAll(Arrays.asList(co.getRelevantQuestions()));
+            qs.addAll(Arrays.asList(co.getRelevantQuestions(onlyDirect)));
         }
 
         Question[] questions = qs.toArray(new Question[0]);
@@ -96,7 +99,7 @@ public class ProgramOutcome extends Outcome {
     
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
-        for (Question q : getRelevantQuestions()) {
+        for (Question q : getRelevantQuestions(false)) {
             if (q.doesQuestionCount())
                 totalValueInCourse += q.getValueInCourse();
         }
