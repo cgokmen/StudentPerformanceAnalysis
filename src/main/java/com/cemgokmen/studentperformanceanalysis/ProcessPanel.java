@@ -78,7 +78,13 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
                         publish(outcome.toString());
                     }
                     
-                    publish("Successfully processed " + file.getName() + " [" + (key+1) + "/" + files.length + "].\n");
+                    publish("Successfully processed " + file.getName() + " [" + (key+1) + "/" + files.length + "].");
+                    
+                    // Limit to one file for now -- TODO: Add support for more
+                    if (files.length > 1) {
+                        publish("Warning! The software currently supports only one file. Execution halted.");
+                        break;
+                    }
                 } catch (Exception ex) {
                     publish("Could not process file " + file.getName() + ".");
                     publish(ex.getMessage());
@@ -106,6 +112,7 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
         public void done() {            
             saveButton.setEnabled(true);
             continueButton.setEnabled(true);
+            setProgress(100);
         }
     }
     
