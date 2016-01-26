@@ -4,7 +4,7 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 

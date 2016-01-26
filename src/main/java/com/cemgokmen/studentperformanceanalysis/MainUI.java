@@ -4,10 +4,12 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MainUI extends javax.swing.JFrame {
@@ -28,12 +30,16 @@ public class MainUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        fileChooser = new javax.swing.JFileChooser();
         panel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
+
+        fileChooser.setFileFilter(new XLSXFilter());
+        fileChooser.setFileHidingEnabled(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StudentPerformanceAnalysis v1.0");
@@ -81,17 +87,22 @@ public class MainUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        (new AboutDialog(this, true)).setVisible(true);
+        JOptionPane.showMessageDialog(this, "StudentPerformanceAnalysis was developed by Cem Gökmen for use by the MEF University in Istanbul, Turkey.\n2016, All Rights Reserved.", "About StudentPerformanceAnalysis", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel panel;
     // End of variables declaration//GEN-END:variables
+
+    public JFileChooser getFileChooser() {
+        return fileChooser;
+    }
     
     public void setPanel(JPanel p) {
         panel.removeAll();

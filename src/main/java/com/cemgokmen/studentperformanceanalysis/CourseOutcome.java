@@ -4,7 +4,7 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
@@ -71,7 +71,7 @@ public class CourseOutcome extends Outcome {
     }
     
     @Override
-    public Question[] getRelevantQuestions(boolean _) {
+    public Question[] getRelevantQuestions(boolean idc) {
         Question[] questions = relevantQuestions.toArray(new Question[0]);
         Arrays.sort(questions);
         return questions;

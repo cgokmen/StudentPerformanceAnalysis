@@ -4,7 +4,7 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
@@ -22,12 +22,12 @@ public class Evaluation implements Comparable<Evaluation> {
     private final double percentage;
     private final List<Question> questions;
     
-    private static final Map<String, Evaluation> evaluations = new LinkedHashMap<String, Evaluation>();
+    private static final Map<String, Evaluation> evaluations = new LinkedHashMap<>();
 
     public Evaluation(String name, double percentage) {
         this.name = name;
         this.percentage = percentage;
-        this.questions = new ArrayList<Question>();
+        this.questions = new ArrayList<>();
     }
     
     public void addQuestion(Question question) {
@@ -142,6 +142,7 @@ public class Evaluation implements Comparable<Evaluation> {
         return evs;
     }
 
+    @Override
     public int compareTo(Evaluation o) {
         return (new AlphanumComparator()).compare(this.getName(), o.getName());
     }

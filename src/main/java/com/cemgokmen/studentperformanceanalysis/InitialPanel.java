@@ -4,7 +4,7 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
@@ -28,7 +28,6 @@ public class InitialPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        fileChooser = new javax.swing.JFileChooser();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         button = new javax.swing.JButton();
@@ -37,11 +36,6 @@ public class InitialPanel extends javax.swing.JPanel {
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 50), new java.awt.Dimension(0, 50), new java.awt.Dimension(32767, 50));
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 50), new java.awt.Dimension(0, 50), new java.awt.Dimension(32767, 50));
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 50), new java.awt.Dimension(0, 50), new java.awt.Dimension(32767, 50));
-
-        fileChooser.setApproveButtonText("Process");
-        fileChooser.setApproveButtonToolTipText("");
-        fileChooser.setDialogTitle("Choose files to process");
-        fileChooser.setMultiSelectionEnabled(true);
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -105,6 +99,8 @@ public class InitialPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
+        JFileChooser fileChooser = mainUI.getFileChooser();
+        fileChooser.setMultiSelectionEnabled(true);
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File[] files = fileChooser.getSelectedFiles();
@@ -119,7 +115,6 @@ public class InitialPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button;
-    private javax.swing.JFileChooser fileChooser;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;

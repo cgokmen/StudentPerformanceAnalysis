@@ -4,12 +4,11 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,14 +23,14 @@ public class Student implements Comparable<Student> {
     private final String letterGrade;
     private final Map<Question, Double> scores;
     
-    private static final Map<Integer, Student> students = new LinkedHashMap<Integer, Student>();
+    private static final Map<Integer, Student> students = new LinkedHashMap<>();
 
     public Student(int id, String name, boolean countStudent, String letterGrade) {
         this.id = id;
         this.name = name;
         this.countStudent = countStudent;
         this.letterGrade = letterGrade;
-        this.scores = new LinkedHashMap<Question, Double>();
+        this.scores = new LinkedHashMap<>();
     }
     
     public void addScore(Question q, double score) {
@@ -48,9 +47,7 @@ public class Student implements Comparable<Student> {
 
     public boolean doesStudentCount() {
         if (!countStudent) return false;
-        if (letterGrade.toUpperCase().charAt(0) == 'F') return false;
-        
-        return true;
+        return letterGrade.toUpperCase().charAt(0) != 'F';
     }
     
     public double getQuestionScore(Question q) {
@@ -133,6 +130,7 @@ public class Student implements Comparable<Student> {
         return studentArray;
     }
 
+    @Override
     public int compareTo(Student o) {
         return ((Integer) this.getId()).compareTo((Integer) o.getId());
     }

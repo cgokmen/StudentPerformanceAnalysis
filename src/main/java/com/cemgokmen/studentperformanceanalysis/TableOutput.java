@@ -1,7 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * StudentPerformanceAnalysis 1.0
+ * http://gh.cemgokmen.com/studentperformanceanalysis
+ *
+ * Copyright 2016 Cem Gökmen
+ * Released under the MIT license
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
@@ -18,10 +21,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-/**
- *
- * @author funstein
- */
 public class TableOutput {
     public static void individualOutcomes (Sheet sheet) {
         Outcome[] allOutcomes = Outcome.getAllWithQuestions();

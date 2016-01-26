@@ -4,7 +4,7 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
@@ -46,7 +46,7 @@ public abstract class Outcome implements Comparable<Outcome> {
     }
     
     public static Outcome[] getAll() {
-        ArrayList<Outcome> outcomes = new ArrayList<Outcome>();
+        ArrayList<Outcome> outcomes = new ArrayList<>();
         
         outcomes.addAll(Arrays.asList(ProgramOutcome.getAll()));
         outcomes.addAll(Arrays.asList(CourseOutcome.getAll()));
@@ -107,6 +107,7 @@ public abstract class Outcome implements Comparable<Outcome> {
         return output;
     }
     
+    @Override
     public int compareTo(Outcome o) {
         return (new AlphanumComparator()).compare(this.getName(), o.getName());
     }

@@ -4,7 +4,7 @@
  *
  * Copyright 2016 Cem Gökmen
  * Released under the MIT license
- * https://github.com/sultanskyman/StudentPerformanceAnalysis/blob/master/LICENSE.md
+ * https://bitbucket.org/sultanskyman/studentperformanceanalysis
  */
 package com.cemgokmen.studentperformanceanalysis;
 
@@ -22,13 +22,13 @@ public class Question implements Comparable<Question> {
     private final Evaluation parent;
     private final int column;
     
-    private static final Map<Integer, Question> questions = new LinkedHashMap<Integer, Question>();
+    private static final Map<Integer, Question> questions = new LinkedHashMap<>();
 
     public Question(String name, double points, boolean countQuestion, Evaluation parent, int column) {
         this.name = name;
         this.points = points;
         this.countQuestion = countQuestion;
-        this.outcomes = new ArrayList<Outcome>();
+        this.outcomes = new ArrayList<>();
         this.parent = parent;
         this.column = column;
         
@@ -100,6 +100,7 @@ public class Question implements Comparable<Question> {
         return questionArray;
     }
 
+    @Override
     public int compareTo(Question o) {
         String thisName = this.getParent().getName() + "." + this.getName();
         String oName = o.getParent().getName() + "." + this.getName();
