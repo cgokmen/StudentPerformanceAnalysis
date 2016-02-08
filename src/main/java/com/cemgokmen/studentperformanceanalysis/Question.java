@@ -14,6 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * @author funstein
+ */
 public class Question implements Comparable<Question> {
     private final String name;
     private final double points;
@@ -24,6 +28,14 @@ public class Question implements Comparable<Question> {
     
     private static final Map<Integer, Question> questions = new LinkedHashMap<>();
 
+    /**
+     *
+     * @param name
+     * @param points
+     * @param countQuestion
+     * @param parent
+     * @param column
+     */
     public Question(String name, double points, boolean countQuestion, Evaluation parent, int column) {
         this.name = name;
         this.points = points;
@@ -35,6 +47,10 @@ public class Question implements Comparable<Question> {
         questions.put(column, this);
     }
     
+    /**
+     *
+     * @param co
+     */
     public void addOutcome(Outcome co) {
         if (!hasOutcome(co)) {
             outcomes.add(co);
@@ -42,40 +58,78 @@ public class Question implements Comparable<Question> {
         }
     }
     
+    /**
+     *
+     * @param co
+     * @return
+     */
     public boolean hasOutcome(Outcome co) {
         return outcomes.contains(co);
     }
     
+    /**
+     *
+     * @return
+     */
     public Outcome[] getOutcomes() {
         Outcome[] outcomeArray = outcomes.toArray(new Outcome[0]);
         Arrays.sort(outcomeArray);
         return outcomeArray;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getPoints() {
         return points;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getColumn() {
         return column;
     }
 
+    /**
+     *
+     * @return
+     */
     public Evaluation getParent() {
         return parent;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean doesQuestionCount() {
         return countQuestion;
     }
     
+    /**
+     *
+     * @return
+     */
     public double getValueInCourse() {
         return (points / 100.0) * getParent().getPercentage();
     }
     
+    /**
+     *
+     * @param co
+     * @return
+     */
     public double getValueInOutcome(Outcome co) {
         return (countQuestion) ? getValueInCourse() / co.getTotalValueInCourse() : 0;
     }
@@ -90,10 +144,19 @@ public class Question implements Comparable<Question> {
         return output;
     }
     
+    /**
+     *
+     * @param str
+     * @return
+     */
     public static Question get(String str) {
         return Question.get(str);
     }
     
+    /**
+     *
+     * @return
+     */
     public static Question[] getAll() {
         Question[] questionArray = questions.values().toArray(new Question[0]);
         Arrays.sort(questionArray);

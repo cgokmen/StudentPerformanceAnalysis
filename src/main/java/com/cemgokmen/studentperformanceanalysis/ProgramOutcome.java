@@ -19,6 +19,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+/**
+ *
+ * @author funstein
+ */
 public class ProgramOutcome extends Outcome {
     private final String name;
     private final String explanation;
@@ -28,6 +32,11 @@ public class ProgramOutcome extends Outcome {
     
     private static final Map<String, ProgramOutcome> programOutcomes = new LinkedHashMap<>();
 
+    /**
+     *
+     * @param name
+     * @param explanation
+     */
     public ProgramOutcome(String name, String explanation) {
         this.name = name;
         this.explanation = explanation;
@@ -36,15 +45,28 @@ public class ProgramOutcome extends Outcome {
         this.totalValueInCourse = 0;
     }
     
+    /**
+     *
+     * @param co
+     */
     public void addCourseOutcome(CourseOutcome co) {
         if (!hasCourseOutcome(co))
             courseOutcomes.add(co);
     }
     
+    /**
+     *
+     * @param co
+     * @return
+     */
     public boolean hasCourseOutcome(CourseOutcome co) {
         return courseOutcomes.contains(co);
     }
     
+    /**
+     *
+     * @return
+     */
     @Override
     public Outcome[] getRelatedOutcomes() {
         Outcome[] outcomes = courseOutcomes.toArray(new Outcome[0]);
@@ -52,12 +74,21 @@ public class ProgramOutcome extends Outcome {
         return outcomes;
     }
     
+    /**
+     *
+     * @param q
+     */
     @Override
     public void addRelevantQuestion(Question q) {
         directlyRelevantQuestions.add(q);
         recalculateTotalValueInCourse();
     }
     
+    /**
+     *
+     * @param q
+     * @return
+     */
     @Override
     public boolean hasRelevantQuestion(Question q) {
         if (directlyRelevantQuestions.contains(q))
@@ -71,10 +102,20 @@ public class ProgramOutcome extends Outcome {
         return false;
     }
     
+    /**
+     *
+     * @param q
+     * @return
+     */
     public boolean hasDirectlyRelevantQuestion(Question q) {
         return directlyRelevantQuestions.contains(q);
     }
     
+    /**
+     *
+     * @param onlyDirect
+     * @return
+     */
     @Override
     public Question[] getRelevantQuestions(boolean onlyDirect) {
         if (onlyDirect)
@@ -91,35 +132,70 @@ public class ProgramOutcome extends Outcome {
         return questions;
     }
     
+    /**
+     *
+     * @return
+     */
     public Question[] getDirectlyRelevantQuestions() {
         Question[] questions = directlyRelevantQuestions.toArray(new Question[0]);
         Arrays.sort(questions);
         return questions;
     }
     
+    /**
+     *
+     */
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
-        for (Question q : getRelevantQuestions(false)) {
+        
+        // For the set-based approach, comment out this part
+        List<Question> qs = new ArrayList<>();
+        qs.addAll(directlyRelevantQuestions);
+        for (CourseOutcome co : courseOutcomes) {
+            qs.addAll(Arrays.asList(co.getRelevantQuestions(false)));
+        }
+        // Comment out until here
+        
+        // Uncomment this line:
+        // Set<Question> qs = new HashSet<>();
+        
+        for (Question q : qs) {
             if (q.doesQuestionCount())
                 totalValueInCourse += q.getValueInCourse();
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getExplanation() {
         return explanation;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public double getTotalValueInCourse() {
         return totalValueInCourse;
     }
     
+    /**
+     *
+     * @param sheet
+     */
     public static void processExcelSheet(Sheet sheet) {
         int startingRow = 2;
         while (true) {
@@ -144,10 +220,19 @@ public class ProgramOutcome extends Outcome {
         }
     }
     
+    /**
+     *
+     * @param str
+     * @return
+     */
     public static ProgramOutcome get(String str) {
         return programOutcomes.get(str);
     }
     
+    /**
+     *
+     * @return
+     */
     public static ProgramOutcome[] getAll() {
         ProgramOutcome[] outcomes = programOutcomes.values().toArray(new ProgramOutcome[0]);
         Arrays.sort(outcomes);

@@ -23,6 +23,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+/**
+ *
+ * @author funstein
+ */
 public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeListener {
     private Task task;
     private final MainUI mainUI;
@@ -126,6 +130,10 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
         progressBar.setValue(0);
     }
     
+    /**
+     *
+     * @param files
+     */
     public void processFiles(File[] files) {
         //setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (task == null) {

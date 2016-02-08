@@ -19,6 +19,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+/**
+ *
+ * @author funstein
+ */
 public class CourseOutcome extends Outcome {
     private final String name;
     private final String explanation;
@@ -28,6 +32,11 @@ public class CourseOutcome extends Outcome {
     
     private static final Map<String, CourseOutcome> courseOutcomes = new LinkedHashMap<>();
 
+    /**
+     *
+     * @param name
+     * @param explanation
+     */
     public CourseOutcome(String name, String explanation) {
         this.name = name;
         this.explanation = explanation;
@@ -36,6 +45,10 @@ public class CourseOutcome extends Outcome {
         this.totalValueInCourse = 0;
     }
     
+    /**
+     *
+     * @param po
+     */
     public void addProgramOutcome(ProgramOutcome po) {
         if (!hasProgramOutcome(po)) {
             programOutcomes.add(po);
@@ -43,10 +56,19 @@ public class CourseOutcome extends Outcome {
         }
     }
     
+    /**
+     *
+     * @param po
+     * @return
+     */
     public boolean hasProgramOutcome(ProgramOutcome po) {
         return programOutcomes.contains(po);
     }
     
+    /**
+     *
+     * @return
+     */
     @Override
     public Outcome[] getRelatedOutcomes() {
         Outcome[] outcomes = programOutcomes.toArray(new Outcome[0]);
@@ -54,6 +76,10 @@ public class CourseOutcome extends Outcome {
         return outcomes;
     }
     
+    /**
+     *
+     * @param q
+     */
     @Override
     public void addRelevantQuestion(Question q) {
         if (!hasRelevantQuestion(q)) {
@@ -65,11 +91,21 @@ public class CourseOutcome extends Outcome {
         }
     }
     
+    /**
+     *
+     * @param q
+     * @return
+     */
     @Override
     public boolean hasRelevantQuestion(Question q) {
         return relevantQuestions.contains(q);
     }
     
+    /**
+     *
+     * @param idc
+     * @return
+     */
     @Override
     public Question[] getRelevantQuestions(boolean idc) {
         Question[] questions = relevantQuestions.toArray(new Question[0]);
@@ -77,6 +113,9 @@ public class CourseOutcome extends Outcome {
         return questions;
     }
     
+    /**
+     *
+     */
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
         for (Question q : relevantQuestions) {
@@ -85,21 +124,37 @@ public class CourseOutcome extends Outcome {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getExplanation() {
         return explanation;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public double getTotalValueInCourse() {
         return totalValueInCourse;
     }
     
+    /**
+     *
+     * @param sheet
+     */
     public static void processExcelSheet(Sheet sheet) {
         int startingRow = 6;
         while (true) {
@@ -134,10 +189,19 @@ public class CourseOutcome extends Outcome {
         }
     }
     
+    /**
+     *
+     * @param str
+     * @return
+     */
     public static CourseOutcome get(String str) {
         return courseOutcomes.get(str);
     }
     
+    /**
+     *
+     * @return
+     */
     public static CourseOutcome[] getAll() {
         CourseOutcome[] outcomes = courseOutcomes.values().toArray(new CourseOutcome[0]);
         Arrays.sort(outcomes);

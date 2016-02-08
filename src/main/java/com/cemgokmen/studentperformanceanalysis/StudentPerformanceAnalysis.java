@@ -10,7 +10,16 @@ package com.cemgokmen.studentperformanceanalysis;
 
 import javax.swing.JPanel;
 
+/**
+ *
+ * @author funstein
+ */
 public class StudentPerformanceAnalysis  {
+
+    /**
+     *
+     * @param args
+     */
     public static void main( String[] args ) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

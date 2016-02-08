@@ -16,6 +16,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+/**
+ *
+ * @author funstein
+ */
 public class Student implements Comparable<Student> {
     private final int id;
     private final String name;
@@ -25,6 +29,13 @@ public class Student implements Comparable<Student> {
     
     private static final Map<Integer, Student> students = new LinkedHashMap<>();
 
+    /**
+     *
+     * @param id
+     * @param name
+     * @param countStudent
+     * @param letterGrade
+     */
     public Student(int id, String name, boolean countStudent, String letterGrade) {
         this.id = id;
         this.name = name;
@@ -33,27 +44,53 @@ public class Student implements Comparable<Student> {
         this.scores = new LinkedHashMap<>();
     }
     
+    /**
+     *
+     * @param q
+     * @param score
+     */
     public void addScore(Question q, double score) {
         scores.put(q, score);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean doesStudentCount() {
         if (!countStudent) return false;
         return letterGrade.toUpperCase().charAt(0) != 'F';
     }
     
+    /**
+     *
+     * @param q
+     * @return
+     */
     public double getQuestionScore(Question q) {
         return scores.get(q);
     }
     
+    /**
+     *
+     * @return
+     */
     public double calculateCourseScore() {
         double score = 0;
         
@@ -64,6 +101,12 @@ public class Student implements Comparable<Student> {
         return score;
     }
     
+    /**
+     *
+     * @param co
+     * @param onlyDirect
+     * @return
+     */
     public double calculateOutcomeScore(Outcome co, boolean onlyDirect) {
         double score = 0;
         
@@ -81,6 +124,10 @@ public class Student implements Comparable<Student> {
         return id + "";
     }
     
+    /**
+     *
+     * @param sheet
+     */
     public static void processExcelSheet(Sheet sheet) {
         int startingRow = 9;
         while (true) {
@@ -120,10 +167,19 @@ public class Student implements Comparable<Student> {
         }
     }
     
+    /**
+     *
+     * @param id
+     * @return
+     */
     public static Student get(int id) {
         return students.get(id);
     }
     
+    /**
+     *
+     * @return
+     */
     public static Student[] getAll() {
         Student[] studentArray = students.values().toArray(new Student[0]);
         Arrays.sort(studentArray);

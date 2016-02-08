@@ -21,7 +21,16 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+/**
+ *
+ * @author funstein
+ */
 public class TableOutput {
+
+    /**
+     *
+     * @param sheet
+     */
     public static void individualOutcomes (Sheet sheet) {
         Outcome[] allOutcomes = Outcome.getAllWithQuestions();
         Row headers = sheet.createRow(0);
@@ -103,6 +112,10 @@ public class TableOutput {
         averageCell.setCellStyle(style);
     }
     
+    /**
+     *
+     * @param sheet
+     */
     public static void treeResults (Sheet sheet) {
         Row poHeaders = sheet.createRow(0);
         Row coHeaders = sheet.createRow(1);
@@ -243,6 +256,10 @@ public class TableOutput {
         }
     }
     
+    /**
+     *
+     * @param sheet
+     */
     public static void successCriteria (Sheet sheet) {
         DataFormat format = sheet.getWorkbook().createDataFormat();
         CellStyle style = sheet.getWorkbook().createCellStyle();

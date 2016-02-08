@@ -11,21 +11,61 @@ package com.cemgokmen.studentperformanceanalysis;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ *
+ * @author funstein
+ */
 public abstract class Outcome implements Comparable<Outcome> {    
+
+    /**
+     *
+     * @param q
+     */
     public abstract void addRelevantQuestion(Question q);
     
+    /**
+     *
+     * @param q
+     * @return
+     */
     public abstract boolean hasRelevantQuestion(Question q);
     
+    /**
+     *
+     * @param onlyDirect
+     * @return
+     */
     public abstract Question[] getRelevantQuestions(boolean onlyDirect);
     
+    /**
+     *
+     * @return
+     */
     public abstract Outcome[] getRelatedOutcomes();
         
+    /**
+     *
+     * @return
+     */
     public abstract String getName();
 
+    /**
+     *
+     * @return
+     */
     public abstract String getExplanation();
 
+    /**
+     *
+     * @return
+     */
     public abstract double getTotalValueInCourse();
     
+    /**
+     *
+     * @param onlyDirect
+     * @return
+     */
     public double calculateAverage(boolean onlyDirect) {
         double sum = 0;
         int eligibleStudents = 0;
@@ -38,6 +78,11 @@ public abstract class Outcome implements Comparable<Outcome> {
         return (eligibleStudents > 0) ? sum / eligibleStudents : -1;
     }
     
+    /**
+     *
+     * @param key
+     * @return
+     */
     public static Outcome get(String key) {
         Outcome courseOutcome = CourseOutcome.get(key);
         Outcome programOutcome = ProgramOutcome.get(key);
@@ -45,6 +90,10 @@ public abstract class Outcome implements Comparable<Outcome> {
         return (courseOutcome == null) ? programOutcome : courseOutcome;
     }
     
+    /**
+     *
+     * @return
+     */
     public static Outcome[] getAll() {
         ArrayList<Outcome> outcomes = new ArrayList<>();
         
@@ -54,6 +103,10 @@ public abstract class Outcome implements Comparable<Outcome> {
         return outcomes.toArray(new Outcome[0]);
     }
     
+    /**
+     *
+     * @return
+     */
     public static Outcome[] getAllWithQuestions() {
         ArrayList<Outcome> outcomes = new ArrayList<>();
         

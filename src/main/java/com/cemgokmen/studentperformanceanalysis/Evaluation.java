@@ -17,6 +17,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+/**
+ *
+ * @author funstein
+ */
 public class Evaluation implements Comparable<Evaluation> {
     private final String name;
     private final double percentage;
@@ -24,31 +28,57 @@ public class Evaluation implements Comparable<Evaluation> {
     
     private static final Map<String, Evaluation> evaluations = new LinkedHashMap<>();
 
+    /**
+     *
+     * @param name
+     * @param percentage
+     */
     public Evaluation(String name, double percentage) {
         this.name = name;
         this.percentage = percentage;
         this.questions = new ArrayList<>();
     }
     
+    /**
+     *
+     * @param question
+     */
     public void addQuestion(Question question) {
         if (!hasQuestion(question))
             questions.add(question);
     }
     
+    /**
+     *
+     * @param question
+     * @return
+     */
     public boolean hasQuestion(Question question) {
         return questions.contains(question);
     }
     
+    /**
+     *
+     * @return
+     */
     public Question[] getQuestions() {
         Question[] questionArray = questions.toArray(new Question[0]);
         Arrays.sort(questionArray);
         return questionArray;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getPercentage() {
         return percentage;
     }
@@ -63,6 +93,10 @@ public class Evaluation implements Comparable<Evaluation> {
         return output;
     }
     
+    /**
+     *
+     * @param sheet
+     */
     public static void processExcelSheet(Sheet sheet) {        
         Row exams = sheet.getRow(1);
         if (exams == null) return;
@@ -132,10 +166,19 @@ public class Evaluation implements Comparable<Evaluation> {
         }
     }
     
+    /**
+     *
+     * @param str
+     * @return
+     */
     public static Evaluation get(String str) {
         return evaluations.get(str);
     }
     
+    /**
+     *
+     * @return
+     */
     public static Evaluation[] getAll() {
         Evaluation[] evs = evaluations.values().toArray(new Evaluation[0]);
         Arrays.sort(evs);

@@ -12,6 +12,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ *
+ * @author funstein
+ */
 public class MainUI extends javax.swing.JFrame {
 
     /**
@@ -100,10 +104,18 @@ public class MainUI extends javax.swing.JFrame {
     private javax.swing.JPanel panel;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     *
+     * @return
+     */
     public JFileChooser getFileChooser() {
         return fileChooser;
     }
     
+    /**
+     *
+     * @param p
+     */
     public void setPanel(JPanel p) {
         panel.removeAll();
         panel.add(p);

@@ -11,9 +11,17 @@ package com.cemgokmen.studentperformanceanalysis;
 import java.io.File;
 import javax.swing.JFileChooser;
 
+/**
+ *
+ * @author funstein
+ */
 public class InitialPanel extends javax.swing.JPanel {
     private final MainUI mainUI;
     
+    /**
+     *
+     * @param ui
+     */
     public InitialPanel(MainUI ui) {
         this.mainUI = ui;
         initComponents();

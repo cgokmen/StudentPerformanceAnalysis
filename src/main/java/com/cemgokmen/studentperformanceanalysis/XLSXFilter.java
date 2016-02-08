@@ -11,6 +11,10 @@ package com.cemgokmen.studentperformanceanalysis;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
+/**
+ *
+ * @author funstein
+ */
 public class XLSXFilter extends FileFilter {
     @Override
     public boolean accept(File file) {
