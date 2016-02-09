@@ -10,6 +10,7 @@ package com.cemgokmen.studentperformanceanalysis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -121,7 +122,11 @@ public class ProgramOutcome extends Outcome {
         if (onlyDirect)
             return getDirectlyRelevantQuestions();
         
-        Set<Question> qs = new LinkedHashSet<>();
+        // For the set-based approach, comment out this line
+        List<Question> qs = new ArrayList<>();
+        
+        // Uncomment this line:
+        //Set<Question> qs = new LinkedHashSet<>();
         qs.addAll(directlyRelevantQuestions);
         for (CourseOutcome co : courseOutcomes) {
             qs.addAll(Arrays.asList(co.getRelevantQuestions(onlyDirect)));
@@ -148,18 +153,7 @@ public class ProgramOutcome extends Outcome {
     public void recalculateTotalValueInCourse() {
         totalValueInCourse = 0;
         
-        // For the set-based approach, comment out this part
-        List<Question> qs = new ArrayList<>();
-        qs.addAll(directlyRelevantQuestions);
-        for (CourseOutcome co : courseOutcomes) {
-            qs.addAll(Arrays.asList(co.getRelevantQuestions(false)));
-        }
-        // Comment out until here
-        
-        // Uncomment this line:
-        // Set<Question> qs = new HashSet<>();
-        
-        for (Question q : qs) {
+        for (Question q : getRelevantQuestions(false)) {
             if (q.doesQuestionCount())
                 totalValueInCourse += q.getValueInCourse();
         }
