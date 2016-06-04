@@ -83,19 +83,32 @@ public class Student implements Comparable<Student> {
      * @param q
      * @return
      */
-    public double getQuestionScore(Question q) {
-        return scores.get(q);
+    public double getQuestionScore(Question q, boolean quantized) {
+        return (quantized) ? StudentPerformanceAnalysis.quantize(scores.get(q) / q.getPoints()) * q.getPoints() : scores.get(q);
+    }
+    
+    /**
+     *
+     * @param q
+     * @return
+     */
+    public double getQuestionPercentage(Question q, boolean quantized) {
+        double score = (quantized) ? StudentPerformanceAnalysis.quantize(scores.get(q) / q.getPoints()) * q.getPoints() : scores.get(q);
+        return score / q.getPoints();
     }
     
     /**
      *
      * @return
      */
-    public double calculateCourseScore() {
+    public double calculateCourseScore(boolean quantized) {
         double score = 0;
         
         for (Entry<Question, Double> e : scores.entrySet()) {
-            score += (e.getValue() / e.getKey().getPoints()) * e.getKey().getValueInCourse();
+            double value = e.getValue();
+            Question q = e.getKey();
+            if (quantized) value = StudentPerformanceAnalysis.quantize(value / q.getPoints()) * q.getPoints();
+            score += (value / q.getPoints()) * e.getKey().getValueInCourse();
         }
         
         return score;
@@ -107,12 +120,13 @@ public class Student implements Comparable<Student> {
      * @param onlyDirect
      * @return
      */
-    public double calculateOutcomeScore(Outcome co, boolean onlyDirect) {
+    public double calculateOutcomeScore(Outcome co, boolean onlyDirect, boolean quantized) {
         double score = 0;
         
         for (Question q : co.getRelevantQuestions(onlyDirect)) {
             double s = 0;
             if (scores.get(q) != null) s = scores.get(q);
+            if (quantized) s = StudentPerformanceAnalysis.quantize(s / q.getPoints()) * q.getPoints();
             score += (s / q.getPoints()) * q.getValueInOutcome(co);
         }
         

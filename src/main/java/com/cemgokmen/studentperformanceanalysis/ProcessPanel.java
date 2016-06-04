@@ -231,6 +231,9 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         JFileChooser fileChooser = mainUI.getFileChooser();
         fileChooser.setMultiSelectionEnabled(false);
+        File preF = fileChooser.getSelectedFile();
+        File newF = new File(preF.getParent() + "/output.xlsx");
+        fileChooser.setSelectedFile(newF);
         if (fileChooser.showSaveDialog(mainUI) == JFileChooser.APPROVE_OPTION) {
             FileWriter fw = null;
             try {
@@ -264,6 +267,14 @@ public class ProcessPanel extends javax.swing.JPanel implements PropertyChangeLi
             // Sheet 2: Outcome Tree
             Sheet sheet2 = wb.createSheet("Tree Results");
             TableOutput.treeResults(sheet2);
+            
+            // Sheet 2.25 : Course Outcome Evaluation
+            Sheet sheet2andaquarter = wb.createSheet("Course Outcome Evaluation");
+            TableOutput.coEvaluation(sheet2andaquarter);
+            
+            // Sheet 2.5: Outcome Tree from Course Activities (Quantized)
+            Sheet sheet2andahalf = wb.createSheet("Quantized Tree Results");
+            TableOutput.quantizedResults(sheet2andahalf);
 
             // Sheet 3: Success Criteria
             Sheet sheet3 = wb.createSheet("Success Criteria");

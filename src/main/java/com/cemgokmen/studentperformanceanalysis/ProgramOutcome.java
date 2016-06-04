@@ -69,8 +69,8 @@ public class ProgramOutcome extends Outcome {
      * @return
      */
     @Override
-    public Outcome[] getRelatedOutcomes() {
-        Outcome[] outcomes = courseOutcomes.toArray(new Outcome[0]);
+    public CourseOutcome[] getRelatedOutcomes() {
+        CourseOutcome[] outcomes = courseOutcomes.toArray(new CourseOutcome[0]);
         Arrays.sort(outcomes);
         return outcomes;
     }

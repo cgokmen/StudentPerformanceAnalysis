@@ -66,12 +66,12 @@ public abstract class Outcome implements Comparable<Outcome> {
      * @param onlyDirect
      * @return
      */
-    public double calculateAverage(boolean onlyDirect) {
+    public double calculateAverage(boolean onlyDirect, boolean quantized) {
         double sum = 0;
         int eligibleStudents = 0;
         for (Student s : Student.getAll()) {
             if (s.doesStudentCount()) {
-                sum += s.calculateOutcomeScore(this, onlyDirect);
+                sum += s.calculateOutcomeScore(this, onlyDirect, quantized);
                 eligibleStudents++;
             }
         }
@@ -151,7 +151,7 @@ public abstract class Outcome implements Comparable<Outcome> {
                 );
             }
 
-            output += String.format("The average for this outcome is: %.2f%%.%n", this.calculateAverage(false) * 100);
+            output += String.format("The average for this outcome is: %.2f%%.%n", this.calculateAverage(false, false) * 100);
         } else {
             output += "N/A\n";
             output += "The average for this outcome cannot be calculated due to the lack of data.\n";

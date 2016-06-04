@@ -9,18 +9,24 @@
 package com.cemgokmen.studentperformanceanalysis;
 
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 /**
  *
  * @author funstein
  */
-public class StudentPerformanceAnalysis  {
+public class StudentPerformanceAnalysis {
+
+    public static double quantize(double value) {
+        return ((((int) (((value * 100) - 1) / 20)) + 1) * 20) / 100.0;
+    }
 
     /**
      *
      * @param args
      */
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

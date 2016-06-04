@@ -84,6 +84,14 @@ public class Question implements Comparable<Question> {
     public String getName() {
         return name;
     }
+    
+    /**
+     *
+     * @return
+     */
+    public String getFullName() {
+        return getParent().getName() + "-" + name;
+    }
 
     /**
      *
@@ -132,6 +140,23 @@ public class Question implements Comparable<Question> {
      */
     public double getValueInOutcome(Outcome co) {
         return (countQuestion) ? getValueInCourse() / co.getTotalValueInCourse() : 0;
+    }
+    
+    /**
+     *
+     * @param quantized
+     * @return
+     */
+    public double calculateAverage(boolean quantized) {
+        double sum = 0;
+        int eligibleStudents = 0;
+        for (Student s : Student.getAll()) {
+            if (s.doesStudentCount()) {
+                sum += s.getQuestionPercentage(this, quantized);
+                eligibleStudents++;
+            }
+        }
+        return (eligibleStudents > 0) ? sum / eligibleStudents : -1;
     }
     
     @Override

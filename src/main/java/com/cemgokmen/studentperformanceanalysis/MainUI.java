@@ -46,7 +46,7 @@ public class MainUI extends javax.swing.JFrame {
         fileChooser.setFileHidingEnabled(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("StudentPerformanceAnalysis v1.0");
+        setTitle("StudentPerformanceAnalysis v2.0");
         setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
@@ -91,7 +91,7 @@ public class MainUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this, "StudentPerformanceAnalysis was developed by Cem Gökmen for use by the MEF University in Istanbul, Turkey.\n2016, All Rights Reserved.", "About StudentPerformanceAnalysis", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(this, "StudentPerformanceAnalysis was developed by Cem Gökmen for use by the MEF University in Istanbul, Turkey.\n2016, This software is licensed under the MIT License, available for you to edit and redistribute.", "About StudentPerformanceAnalysis", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
