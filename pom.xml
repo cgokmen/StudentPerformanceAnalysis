@@ -4,7 +4,7 @@
 
     <groupId>com.cemgokmen</groupId>
     <artifactId>StudentPerformanceAnalysis</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>StudentPerformanceAnalysis</name>
@@ -42,7 +42,7 @@
             <version>2.6.0</version>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>

@@ -49,16 +49,16 @@ public class TableOutput {
             cell.setCellType(Cell.CELL_TYPE_STRING);
             cell.setCellValue(o.getName());
         }
-        
+
         DataFormat format = sheet.getWorkbook().createDataFormat();
         CellStyle style = sheet.getWorkbook().createCellStyle();
         style.setDataFormat(format.getFormat("0.00"));
-        
+
         XSSFCellStyle cancelledStyle = ((XSSFWorkbook) sheet.getWorkbook()).createCellStyle();
         cancelledStyle.cloneStyleFrom(style);
         cancelledStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         cancelledStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
-        
+
         Student[] students = Student.getAll();
         //System.out.println(students.length);
         int j;
@@ -68,15 +68,15 @@ public class TableOutput {
             Student student = students[j];
             Row row = sheet.createRow(j+1);
             row.createCell(0).setCellValue(student.getId());
-            
+
             Cell nameCell = row.createCell(1);
             nameCell.setCellType(Cell.CELL_TYPE_STRING);
             nameCell.setCellValue(student.getName());
             if (!student.doesStudentCount())
                 nameCell.setCellStyle(cancelledStyle);
-            
+
             Cell averageCell = row.createCell(2);
-            
+
             double sumScore = 0;
             int scoreCount = 0;
             for (int k = 0; k < allOutcomes.length; k++) {
@@ -86,19 +86,19 @@ public class TableOutput {
                 c.setCellType(Cell.CELL_TYPE_NUMERIC);
                 c.setCellValue(score);
                 c.setCellStyle(style);
-                
+
                 if (o.getRelevantQuestions(false).length > 0) {
                     sumScore += score;
                     scoreCount++;
                 }
             }
-            
+
             double average = sumScore / scoreCount;
             averageCell.setCellValue(average);
             averageCell.setCellStyle(style);
-            if (!student.doesStudentCount()) 
+            if (!student.doesStudentCount())
                 averageCell.setCellStyle(cancelledStyle);
-            
+
             if (student.doesStudentCount()) {
                 sumAllScores += average;
                 studentCount++;
@@ -107,7 +107,7 @@ public class TableOutput {
         Row averageRow = sheet.createRow(j + 1);
         averageRow.createCell(1).setCellValue("Course averages:");
         Cell averageCell = averageRow.createCell(2);
-        
+
         for (int i = 0; i < allOutcomes.length; i++) {
             Cell cell = averageRow.createCell(i + 3);
             double score = allOutcomes[i].calculateAverage(false, false) * 100;
@@ -117,7 +117,7 @@ public class TableOutput {
         averageCell.setCellValue(sumAllScores / studentCount);
         averageCell.setCellStyle(style);
     }
-    
+
     /**
      *
      * @param sheet
@@ -125,15 +125,15 @@ public class TableOutput {
     public static void treeResults (Sheet sheet) {
         Row poHeaders = sheet.createRow(0);
         Row coHeaders = sheet.createRow(1);
-        
+
         DataFormat format = sheet.getWorkbook().createDataFormat();
         CellStyle style = sheet.getWorkbook().createCellStyle();
         style.setDataFormat(format.getFormat("0.00"));
-        
+
         CellStyle headerStyle = sheet.getWorkbook().createCellStyle();
         headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
-        
-        
+
+
         // Eliminate non-passing students
         Student[] students = Student.getAll();
         ArrayList<Student> validStudents = new ArrayList<>(Arrays.asList(students));
@@ -142,7 +142,7 @@ public class TableOutput {
                 validStudents.remove(s);
         }
         students = validStudents.toArray(new Student[0]);
-        
+
         // Create enough rows for students
         int j;
         for (j = 0; j < students.length; j++) {
@@ -156,32 +156,32 @@ public class TableOutput {
 
         int startCol = 1;
         ProgramOutcome[] programOutcomes = ProgramOutcome.getAll();
-        for (ProgramOutcome po : programOutcomes) {            
+        for (ProgramOutcome po : programOutcomes) {
             int countCells = 0;
-            
+
             Outcome[] relatedOutcomes = po.getRelatedOutcomes();
             countCells += relatedOutcomes.length;
-            
+
             if (po.getDirectlyRelevantQuestions().length > 0)
                 countCells++; // Direct question column
-            
+
             if (countCells > 1) {
                 countCells++; // Average column
             }
-            
+
             if (countCells > 0) {
                 Cell poHeader = poHeaders.createCell(startCol);
                 poHeader.setCellValue(po.getName());
                 poHeader.setCellStyle(headerStyle);
-                
+
                 if (countCells > 1)
                     sheet.addMergedRegion(new CellRangeAddress(0, 0, startCol, startCol + countCells - 1));
-                
+
                 // First course objectives
                 for (Outcome co : relatedOutcomes) {
                     // Insert header
                     coHeaders.createCell(startCol).setCellValue(co.getName());
-                    
+
                     // Loop the lower rows
                     for (int i = 0; i < students.length; i++) {
                         Student s = students[i];
@@ -190,25 +190,25 @@ public class TableOutput {
                         c.setCellValue(score * 5);
                         c.setCellStyle(style);
                     }
-                    
+
                     double avg = co.calculateAverage(true, false) * 5;
                     Cell avgCell = coAvgRow.createCell(startCol);
                     avgCell.setCellValue(avg);
                     avgCell.setCellStyle(style);
-                                        
+
                     if (countCells == 0) {
                         Cell poAvgCell = poAvgRow.createCell(startCol);
                         poAvgCell.setCellValue(avg);
                         poAvgCell.setCellStyle(style);
                     }
-                    
+
                     startCol++;
                 }
-                
+
                 // Direct results
                 if (po.getDirectlyRelevantQuestions().length > 0) {
                     coHeaders.createCell(startCol).setCellValue("Direct");
-                    
+
                     // Loop the lower rows
                     for (int i = 0; i < students.length; i++) {
                         Student s = students[i];
@@ -217,25 +217,25 @@ public class TableOutput {
                         c.setCellValue(score * 5);
                         c.setCellStyle(style);
                     }
-                    
+
                     double avg = po.calculateAverage(true, false) * 5;
                     Cell avgCell = coAvgRow.createCell(startCol);
                     avgCell.setCellValue(avg);
                     avgCell.setCellStyle(style);
-                    
+
                     if (countCells == 0) {
                         Cell poAvgCell = poAvgRow.createCell(startCol);
                         poAvgCell.setCellValue(avg);
                         poAvgCell.setCellStyle(style);
                     }
-                    
+
                     startCol++;
                 }
-                
+
                 // Average results
                 if (countCells > 0) {
                     coHeaders.createCell(startCol).setCellValue("Avg");
-                    
+
                     // Loop the lower rows
                     int i;
                     for (i = 0; i < students.length; i++) {
@@ -245,23 +245,23 @@ public class TableOutput {
                         c.setCellValue(score * 5);
                         c.setCellStyle(style);
                     }
-                    
+
                     i++;
                     double avg = po.calculateAverage(false, false) * 5;
                     Cell coAvgCell = coAvgRow.createCell(startCol);
                     coAvgCell.setCellValue(avg);
                     coAvgCell.setCellStyle(style);
-                    
+
                     Cell poAvgCell = poAvgRow.createCell(startCol);
                     poAvgCell.setCellValue(avg);
                     poAvgCell.setCellStyle(style);
-                    
+
                     startCol++;
                 }
             }
         }
     }
-    
+
     /**
      *
      * @param sheet
@@ -269,20 +269,20 @@ public class TableOutput {
     public static void quantizedResults (Sheet sheet) {
         Row poHeaders = sheet.createRow(0);
         Row qHeaders = sheet.createRow(1);
-        
+
         DataFormat format = sheet.getWorkbook().createDataFormat();
         CellStyle style = sheet.getWorkbook().createCellStyle();
         style.setDataFormat(format.getFormat("0"));
-        
+
         CellStyle avgStyle = sheet.getWorkbook().createCellStyle();
         avgStyle.setDataFormat(format.getFormat("0.00"));
-        
+
         CellStyle textStyle = sheet.getWorkbook().createCellStyle();
         textStyle.setWrapText(true);
-        
+
         CellStyle headerStyle = sheet.getWorkbook().createCellStyle();
         headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
-        
+
         // Eliminate non-passing students
         Student[] students = Student.getAll();
         ArrayList<Student> validStudents = new ArrayList<>(Arrays.asList(students));
@@ -291,33 +291,33 @@ public class TableOutput {
                 validStudents.remove(s);
         }
         students = validStudents.toArray(new Student[0]);
-        
+
         // Create enough rows for students
         int j;
         for (j = 0; j < students.length; j++) {
             Row row = sheet.createRow(j + 2);
             row.createCell(0).setCellValue(students[j].getId());
         }
-        
+
         // Some help text
         Cell poInfo = poHeaders.createCell(0);
         poInfo.setCellValue("Program Outcomes");
         poInfo.setCellStyle(textStyle);
-        
+
         Cell qInfo = qHeaders.createCell(0);
         qInfo.setCellValue("Measurement Tools");
         qInfo.setCellStyle(textStyle);
-        
+
         Row coAvgRow = sheet.createRow(j + 2);
         Cell txtCell1 = coAvgRow.createCell(0);
         txtCell1.setCellValue("Average of measurement tools:");
         txtCell1.setCellStyle(textStyle);
-        
+
         Row poAvgRow = sheet.createRow(j + 3);
         Cell txtCell2 = poAvgRow.createCell(0);
         txtCell2.setCellValue("Program Outcome Average:");
         txtCell2.setCellStyle(textStyle);
-        
+
         Row criteriaRow = sheet.createRow(j + 4);
         Cell txtCell3 = criteriaRow.createCell(0);
         txtCell3.setCellValue("(5=excellent, 1=weak)");
@@ -325,29 +325,29 @@ public class TableOutput {
 
         int startCol = 1;
         ProgramOutcome[] programOutcomes = ProgramOutcome.getAll();
-        for (ProgramOutcome po : programOutcomes) {            
+        for (ProgramOutcome po : programOutcomes) {
             int countCells = 0;
-            
+
             Question[] relatedQuestions = po.getRelevantQuestions(false);
             countCells += relatedQuestions.length;
-            
+
             if (countCells > 1) {
                 countCells++; // Average column
             }
-            
+
             if (countCells > 0) {
                 Cell poHeader = poHeaders.createCell(startCol);
                 poHeader.setCellValue(po.getName());
                 poHeader.setCellStyle(headerStyle);
-                
+
                 if (countCells > 1)
                     sheet.addMergedRegion(new CellRangeAddress(0, 0, startCol, startCol + countCells - 1));
-                
+
                 // First questions
                 for (Question q : relatedQuestions) {
                     // Insert header
                     qHeaders.createCell(startCol).setCellValue(q.getFullName());
-                    
+
                     // Loop the lower rows
                     for (int i = 0; i < students.length; i++) {
                         Student s = students[i];
@@ -356,25 +356,25 @@ public class TableOutput {
                         c.setCellValue(score * 5);
                         c.setCellStyle(style);
                     }
-                    
+
                     double avg = q.calculateAverage(true) * 5;
                     Cell avgCell = coAvgRow.createCell(startCol);
                     avgCell.setCellValue(avg);
                     avgCell.setCellStyle(avgStyle);
-                                        
+
                     if (countCells == 0) {
                         Cell poAvgCell = poAvgRow.createCell(startCol);
                         poAvgCell.setCellValue(avg);
                         poAvgCell.setCellStyle(avgStyle);
                     }
-                    
+
                     startCol++;
                 }
-                
+
                 // Average results
                 if (countCells > 0) {
                     qHeaders.createCell(startCol).setCellValue("Avg");
-                    
+
                     // Loop the lower rows
                     int i;
                     for (i = 0; i < students.length; i++) {
@@ -384,23 +384,23 @@ public class TableOutput {
                         c.setCellValue(score * 5);
                         c.setCellStyle(avgStyle);
                     }
-                    
+
                     i++;
                     double avg = po.calculateAverage(false, true) * 5;
                     Cell coAvgCell = coAvgRow.createCell(startCol);
                     coAvgCell.setCellValue(avg);
                     coAvgCell.setCellStyle(avgStyle);
-                    
+
                     Cell poAvgCell = poAvgRow.createCell(startCol);
                     poAvgCell.setCellValue(avg);
                     poAvgCell.setCellStyle(avgStyle);
-                    
+
                     startCol++;
                 }
             }
         }
     }
-    
+
     /**
      *
      * @param sheet
@@ -408,7 +408,7 @@ public class TableOutput {
     public static void coEvaluation (Sheet sheet) {
         Row infoHeaders = sheet.createRow(0);
         Workbook wb = sheet.getWorkbook();
-        
+
         XSSFFont defaultFont= (XSSFFont) sheet.getWorkbook().createFont();
         defaultFont.setFontHeightInPoints((short)10);
         defaultFont.setFontName("Calibri");
@@ -422,9 +422,9 @@ public class TableOutput {
         font.setColor(IndexedColors.BLACK.getIndex());
         font.setBold(true);
         font.setItalic(false);
-        
+
         DataFormat format = sheet.getWorkbook().createDataFormat();
-        
+
         CellStyle headerStyle = sheet.getWorkbook().createCellStyle();
         headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
         headerStyle.setWrapText(true);
@@ -434,28 +434,28 @@ public class TableOutput {
         headerStyle.setBorderBottom(CellStyle.BORDER_THICK);
         headerStyle.setBorderLeft(CellStyle.BORDER_THICK);
         headerStyle.setBorderRight(CellStyle.BORDER_THICK);
-        
+
         CellStyle poStyle = sheet.getWorkbook().createCellStyle();
         poStyle.setAlignment(CellStyle.ALIGN_CENTER);
         poStyle.setFont(font);
         poStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-        
+
         CellStyle coStyle = sheet.getWorkbook().createCellStyle();
         coStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         coStyle.setWrapText(true);
         coStyle.setDataFormat(format.getFormat("0.00"));
-        
+
         CellStyle questionStyle = sheet.getWorkbook().createCellStyle();
         questionStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         questionStyle.setBorderTop(CellStyle.BORDER_THIN);
         questionStyle.setBorderBottom(CellStyle.BORDER_THIN);
-        
+
         CellStyle style = sheet.getWorkbook().createCellStyle();
         style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         style.setAlignment(CellStyle.ALIGN_CENTER);
         style.setFont(font);
         style.setDataFormat(format.getFormat("0.00"));
-        
+
         Cell c = null;
 
         c = infoHeaders.createCell(0);
@@ -490,14 +490,14 @@ public class TableOutput {
                     Row questionRow = sheet.createRow(currentRow);
                     if (poRow == null) poRow = questionRow;
                     if (coRow == null) coRow = questionRow;
-                    
+
                     Cell questionCell = questionRow.createCell(2);
                     questionCell.setCellValue(q.getFullName());
                     questionCell.setCellStyle(questionStyle);
 
                     currentRow++;
                 }
-                
+
                 if (coRow != null) {
                     Cell outcomeCell = coRow.createCell(1);
                     outcomeCell.setCellStyle(style);
@@ -513,7 +513,7 @@ public class TableOutput {
                         sheet.addMergedRegion(new CellRangeAddress(coRow.getRowNum(), currentRow - 1, 3, 3));
                         sheet.addMergedRegion(new CellRangeAddress(coRow.getRowNum(), currentRow - 1, 4, 4));
                     }
-                    
+
                     // Draw the borders
                     for (int i = 1; i < 5; i++) {
                         CellRangeAddress cellRangeAddress1 = new CellRangeAddress(coRow.getRowNum(), currentRow - 1, i, i);
@@ -524,7 +524,7 @@ public class TableOutput {
                     }
                 }
             }
-     
+
             if (poRow != null) {
                 Cell poCell = poRow.createCell(0);
                 poCell.setCellValue(po.getName());
@@ -533,7 +533,7 @@ public class TableOutput {
                 if (currentRow - poRow.getRowNum() > 1) {
                     sheet.addMergedRegion(new CellRangeAddress(poRow.getRowNum(), currentRow - 1, 0, 0));
                 }
-                
+
                 CellRangeAddress cellRangeAddress2 = new CellRangeAddress(poRow.getRowNum(), currentRow - 1, 0, 4);
                 RegionUtil.setBorderTop(CellStyle.BORDER_THICK, cellRangeAddress2, sheet, wb);
                 RegionUtil.setBorderLeft(CellStyle.BORDER_THICK, cellRangeAddress2, sheet, wb);
@@ -541,15 +541,15 @@ public class TableOutput {
                 RegionUtil.setBorderBottom(CellStyle.BORDER_THICK, cellRangeAddress2, sheet, wb);
             }
         }
-        
+
         sheet.setColumnWidth(0, calculateWidthFromCharacterCount(10));
         sheet.setColumnWidth(1, calculateWidthFromCharacterCount(15));
         sheet.setColumnWidth(3, calculateWidthFromCharacterCount(10));
         sheet.setColumnWidth(4, calculateWidthFromCharacterCount(10));
         sheet.autoSizeColumn(2);
     }
-    
-    
+
+
     /**
      *
      * @param sheet
@@ -558,7 +558,7 @@ public class TableOutput {
         DataFormat format = sheet.getWorkbook().createDataFormat();
         CellStyle style = sheet.getWorkbook().createCellStyle();
         style.setDataFormat(format.getFormat("0.00"));
-        
+
         Row header = sheet.createRow(0);
         header.createCell(0).setCellValue("Related Program Outcomes");
         header.createCell(1).setCellValue("Weak [0.0 - 1.5]");
@@ -566,14 +566,14 @@ public class TableOutput {
         header.createCell(3).setCellValue("Good [2.5 - 3.5]");
         header.createCell(4).setCellValue("Very Good [3.5 - 4.5]");
         header.createCell(5).setCellValue("Excellent [4.5 - 5.0]");
-        
+
         int currentRow = 1;
         for (ProgramOutcome po : ProgramOutcome.getAll()) {
             if (po.getRelevantQuestions(false).length > 0) {
                 Row row = sheet.createRow(currentRow);
                 row.createCell(0).setCellValue(po.getName());
-                
-                double score = po.calculateAverage(false, false) * 5;
+
+                double score = po.calculateAverage(false, true) * 5;
                 int targetCol = 1;
                 if (score >= 1.5 && score < 2.5) {
                     targetCol = 2;
@@ -584,11 +584,11 @@ public class TableOutput {
                 } else if (score > 4.5) {
                     targetCol = 5;
                 }
-                
+
                 Cell c = row.createCell(targetCol);
                 c.setCellValue(score);
                 c.setCellStyle(style);
-                
+
                 currentRow++;
             }
         }

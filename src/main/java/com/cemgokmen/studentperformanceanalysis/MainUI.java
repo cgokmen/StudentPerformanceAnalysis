@@ -46,7 +46,7 @@ public class MainUI extends javax.swing.JFrame {
         fileChooser.setFileHidingEnabled(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("StudentPerformanceAnalysis v2.0");
+        setTitle("StudentPerformanceAnalysis v2.1");
         setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
@@ -111,7 +111,7 @@ public class MainUI extends javax.swing.JFrame {
     public JFileChooser getFileChooser() {
         return fileChooser;
     }
-    
+
     /**
      *
      * @param p
@@ -119,7 +119,7 @@ public class MainUI extends javax.swing.JFrame {
     public void setPanel(JPanel p) {
         panel.removeAll();
         panel.add(p);
-        
+
         validate();
         pack();
         repaint();
