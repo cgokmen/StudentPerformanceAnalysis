@@ -1,5 +1,5 @@
 /*
- * StudentPerformanceAnalysis 1.0
+ * StudentPerformanceAnalysis 2.2
  * http://gh.cemgokmen.com/studentperformanceanalysis
  *
  * Copyright 2016 Cem Gökmen
@@ -19,7 +19,22 @@ import javax.swing.UIManager.LookAndFeelInfo;
 public class StudentPerformanceAnalysis {
 
     public static double quantize(double value) {
-        return ((((int) (((value * 100) - 1) / 20)) + 1) * 20) / 100.0;
+      double grade = value * 100;
+      double result = value;
+
+      if (grade < 19) {
+        result = 0.2;
+      } else if (grade < 39) {
+        result = 0.4;
+      } else if (grade < 59) {
+        result = 0.6;
+      } else if (grade < 79) {
+        result = 0.8;
+      } else {
+        result = 1.0;
+      }
+
+      return result;
     }
 
     /**
