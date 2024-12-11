@@ -76,12 +76,15 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>sh.tak.appbundler</groupId>
-                <artifactId>appbundle-maven-plugin</artifactId>
-                <version>1.0.4</version>
+                <groupId>de.perdian.maven.plugins</groupId>
+                <artifactId>macosappbundler-maven-plugin</artifactId>
+                <version>1.21.1</version>
                 <configuration>
-                    <mainClass>com.cemgokmen.studentperformanceanalysis.StudentPerformanceAnalysis</mainClass>
-                    <iconFile>logo.icns</iconFile>
+                    <plist>
+                        <CFBundleIconFile>src/main/resources/logo.icns</CFBundleIconFile>
+                        <CFBundleDisplayName>StudentPerformanceAnalysis</CFBundleDisplayName>
+                        <JVMMainClassName>com.cemgokmen.studentperformanceanalysis.StudentPerformanceAnalysis</JVMMainClassName>
+                    </plist>
                 </configuration>
                 <executions>
                     <execution>
